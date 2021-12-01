@@ -15,20 +15,32 @@ const handle = action => evt => {
   }
   fetch(`/api/auth/${action}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(credentials),
   })
-    .then(res => res.json())
-    .then(data => { console.log(data); message.textContent = data.message })
-    .catch(err => { message.textContent = err.message; debugger })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        message.textContent = data.message
+      })
+      .catch(err => {
+        message.textContent = err.message;
+        debugger
+      })
 }
 
 const logout = evt => {
   evt.preventDefault()
   fetch(`/api/auth/logout`)
-    .then(res => res.json())
-    .then(data => { console.log(data); message.textContent = data.message })
-    .catch(err => { message.textContent = err.message; debugger })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        message.textContent = data.message
+      })
+      .catch(err => {
+        message.textContent = err.message;
+        debugger
+      })
 }
 
 registerBtn.addEventListener('click', handle('register'))
