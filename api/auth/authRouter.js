@@ -8,7 +8,8 @@ const bcrypt = require('bcryptjs')
 // INSTALL -> npm i bcryptjs <-
 // STEP 3 PART II
 // we gotta ahead into the model to make it do something when we add a new user
-const {add} = require('../users/users-model')
+const {add, findBy} = require('../users/users-model')
+const bcryptjs = require("bcryptjs");
 
 
 // |~| STEP |~| TWO |~|
@@ -57,7 +58,35 @@ router.post('/register', validatePayLoad, async (req, res, next) => {
 })
 
 router.post('/login', validatePayLoad, async (req, res, next) => {
-  res.json('login wired!')
+  // STEP 6
+  try {
+    //  - get the user name by whatever username the user created
+    const {username, password} = req.body
+
+    //  does username correspond to an existing user?
+    // TAKE THE LONGER ROUTE THEN REFACTOR THE CODE WILL MAKE UNDERSTANDING THIS A LOT EASIER
+    const [user] = await findBy({username})
+
+    //  if existing has length -> awesome
+    //  otherwise make the user kick rocks ->
+
+    // checks to make sure the password matches
+    if(user && bcrypt.compareSync(password, user.password)){
+      // check to see what we are working with
+      // checking w/ postman and you enter the wrong info you get the -> [BAD CREDENTIALS] message!
+      console.log(user)
+      // we have determined that the username & password are LEGIT
+      // we have to start a session with this user!!!
+      res.status(200).json(user)
+    } else {
+      next({
+        status: 401, message: '-> BAD CREDENTIALS! <-'
+      })
+    }
+
+  } catch (err) {
+    next(err)
+  }
 
 })
 
