@@ -1,5 +1,9 @@
 const router = require('express').Router();
 
+// STEP 7
+// - install express sessions
+
+
 // STEP 3 PART IV
 // importing bcrypt
 const bcrypt = require('bcryptjs')
@@ -9,7 +13,6 @@ const bcrypt = require('bcryptjs')
 // STEP 3 PART II
 // we gotta ahead into the model to make it do something when we add a new user
 const {add, findBy} = require('../users/users-model')
-const bcryptjs = require("bcryptjs");
 
 
 // |~| STEP |~| TWO |~|
@@ -75,9 +78,23 @@ router.post('/login', validatePayLoad, async (req, res, next) => {
       // check to see what we are working with
       // checking w/ postman and you enter the wrong info you get the -> [BAD CREDENTIALS] message!
       console.log(user)
+
+      // STEP 7 PART IV
+      // lets look at our sessions for the very first time!
+      // unless we change it sessions IS NOT STORED!
+      console.log(req.session)
+
+      // a cookie will be sent on -> on the response
+      // the session will be stored
+      req.session.user = user
+
+      res.json({
+        message: `Welcome, ${username}, have a cookie!`
+      })
+
       // we have determined that the username & password are LEGIT
       // we have to start a session with this user!!!
-      res.status(200).json(user)
+      // res.status(200).json(user)
     } else {
       next({
         status: 401, message: '-> BAD CREDENTIALS! <-'
